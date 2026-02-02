@@ -47,11 +47,16 @@ const server = http.createServer(async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        if (!err404) {
-            err404 = await fs.readFile("./404.html");
+        try {
+            if (!err404) {
+                err404 = await fs.readFile("./404.html");
+            }
+            data = err404;
+        } catch (err) {
+            data = "Internal Server Error";
+        } finally {
+            statusCode = 404;
         }
-        statusCode = 404;
-        data = err404;
     } finally {
         res.writeHead(statusCode, headers);
         res.end(data);
