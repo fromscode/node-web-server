@@ -1,12 +1,12 @@
 import http from "node:http";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 
 let index = null;
 let about = null;
 let contact = null;
 let err404 = null;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     console.log(`Request received: ${req.headers.host}${req.url}`);
     const headers = {
         "Content-type": "text/html",
@@ -17,28 +17,28 @@ const server = http.createServer((req, res) => {
     switch (req.url) {
         case "/": {
             if (!index) {
-                index = fs.readFileSync("./index.html");
+                index = await fs.readFile("./index.html");
             }
             data = index;
             break;
         }
         case "/about": {
             if (!about) {
-                about = fs.readFileSync("./about.html");
+                about = await fs.readFile("./about.html");
             }
             data = about;
             break;
         }
         case "/contact-me": {
             if (!contact) {
-                contact = fs.readFileSync("./contact-me.html");
+                contact = await fs.readFile("./contact-me.html");
             }
             data = contact;
             break;
         }
         default: {
             if (!err404) {
-                err404 = fs.readFileSync("./404.html");
+                err404 = await fs.readFile("./404.html");
             }
             statusCode = 404;
             data = err404;
